@@ -1,0 +1,19 @@
+language: python
+
+python:
+  - '2.7'
+  - '3.3'
+  - '3.4'
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install bzr
+
+install:
+  - bzr branch lp:~jayvdb/testscenarios/0.4-with_scenarios testscenarios
+  - cd testscenarios
+  - python setup.py install
+  - cd ..
+
+script:
+  - python setup.py test
