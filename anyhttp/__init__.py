@@ -396,29 +396,20 @@ class dugong(HostPortConnectionClass):
 
 class drest_request(MultiuseClass):
 
+    """
+    Wrapper for the underlying RequestHandler.
+
+    The class 'API' could be supported using SingleSiteClass pattern,
+    however there is a bug preventing this:
+    https://github.com/datafolklabs/drest/issues/33.
+    """
+
     cls = 'RequestHandler'
 
     def raw(self, url):
         self.http._meta.trailing_slash = False
         self.http._meta.deserialize = False
         result = self.http.make_request(method='GET', url=url)
-        return result.data
-
-
-class drest(BaseurlSiteClass):
-
-    """Does not work: adds '/'."""
-
-    cls = 'API'
-
-    def raw(self, url):
-        self.cls_init(url)
-        self.http._meta.trailing_slash = False
-        self.http._meta.deserialize = False
-
-        path = self.get_path(url)
-        print(path)
-        result = self.http.make_request(method='GET', path=path)
         return result.data
 
 
