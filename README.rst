@@ -54,6 +54,7 @@ The sequence will look like:
     app:
 
         import httplib2  # must be first
+        
         import your_package
 
     your_package:
