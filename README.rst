@@ -6,6 +6,7 @@ and/or want to re-used by applications which already have a
 dependency on a http clients.
 
 anyhttp supports:
+
 * requests
 * httplib2
 * urllib3
@@ -50,18 +51,19 @@ anyhttp.get_binary(url)
 anyhttp will look for a capable http clients in sys.modules.
 The sequence will look like:
 
-app:
+    app:
 
-    import httplib2  # must be first
-    import your_package
+        import httplib2  # must be first
+        import your_package
 
-your_package:
+    your_package:
 
-    import anyhttp
+        import anyhttp
 
-anyhttp:
+    anyhttp:
 
-    http = Wrapper(httplib2)
+        http = Wrapper(httplib2)
+
 
 Testing
 =======
