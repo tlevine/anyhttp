@@ -56,19 +56,19 @@ class TestBase(testtools.TestCase):
         name = self.package  # load name from scenario
 
         if name in threading_problems and 'FORCE_TEST' not in os.environ:
-            raise unittest.SkipTest('%s causes threading problems' % name)
+            self.skipTest('%s causes threading problems' % name)
 
         if sys.version_info[0] > 2:
             if name in anyhttp.py2_http_packages:
-                raise unittest.SkipTest('%s does not work on > py2' % name)
+                self.skipTest('%s does not work on > py2' % name)
         else:
             if name in anyhttp.py3_http_packages:
-                raise unittest.SkipTest('%s does not work on < py3' % name)
+                self.skipTest('%s does not work on < py3' % name)
 
         try:
             __import__(name)
         except ImportError as e:
-            raise unittest.SkipTest('%s could not be imported: %r' % (name, e))
+            self.skipTest('%s could not be imported: %r' % (name, e))
 
         assert(name in sys.modules)
 
