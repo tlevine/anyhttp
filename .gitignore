@@ -1,0 +1,12 @@
+*.bak
+*.pyc
+*.pyo
+*.py~
+*.rst~
+/.tox
+/*.egg
+*pycache*
+.idea
+build
+dist
+anyhttp.egg-info/
