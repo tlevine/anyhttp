@@ -12,7 +12,7 @@ before_install:
   - export TRAVIS_PYTHON_VERSION_MAJOR="${TRAVIS_PYTHON_VERSION:0:1}"
   - export APT_PYTHON_PREFIX="python${TRAVIS_PYTHON_VERSION_MAJOR#2}"
   - sudo apt-get update -qq
-  - sudo apt-get install bzr ${APT_PYTHON_PREFIX}-pyasn1
+  - sudo apt-get install bzr ${APT_PYTHON_PREFIX}-pyasn1 ${APT_PYTHON_PREFIX}-enum34 ${APT_PYTHON_PREFIX}-cryptography
 
 install:
   - bzr branch lp:~jayvdb/testscenarios/0.4-with_scenarios testscenarios
