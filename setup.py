@@ -39,6 +39,9 @@ bugfix_dependency_links = [
     'git+git://yum.baseurl.org/urlgrabber.git#egg=urlgrabber',
     # https://github.com/ifduyue/urlfetch/issues/40
     'git+https://github.com/ifduyue/urlfetch#egg=urlfetch',
+    # pypi version is very old and causes:
+    # https://travis-ci.org/jayvdb/anyhttp/jobs/60363955
+    'git+https://github.com/coruus/pyasn1-modules#egg=pyasn1-modules',
 ]
 
 dependency_links = []
