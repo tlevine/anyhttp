@@ -8,7 +8,7 @@
 import sys
 import types
 
-from io import StringIO, BytesIO
+from io import BytesIO
 from warnings import warn
 
 if sys.version_info[0] > 2:
@@ -31,6 +31,8 @@ verbose = False
 
 
 class Http(object):
+
+    """Base class to wrap HTTP client implementations."""
 
     def __init__(self, package):
         self.package = package
@@ -78,6 +80,8 @@ class Http(object):
 
 class PackageGet(Http):
 
+    """Use get function from the package."""
+
     def raw(self, url):
         result = self.package.get(url)
         return self._extract_raw(result)
@@ -85,7 +89,7 @@ class PackageGet(Http):
 
 class PackageGetContents(PackageGet):
 
-    """requests pattern."""
+    """Wrapper for requests."""
 
     @classmethod
     def _extract_raw(cls, value):
@@ -93,6 +97,8 @@ class PackageGetContents(PackageGet):
 
 
 class addinfourl(Http):
+
+    """Use .read()."""
 
     @classmethod
     def _extract_raw(cls, value):
@@ -102,12 +108,16 @@ class addinfourl(Http):
 
 class urlopen(addinfourl, Http):
 
+    """Use urlopen to fetch the resource."""
+
     def raw(self, url):
         result = self.package.urlopen(url)
         return self._extract_raw(result)
 
 
 class ClassHttp(Http):
+
+    """Base class to wrap clients which use a class."""
 
     cls = None
 
@@ -118,6 +128,8 @@ class ClassHttp(Http):
 
 
 class SingleSiteClass(ClassHttp):
+
+    """Base class to wrap a client class instance per site."""
 
     def __init__(self, package):
         self._url = None
@@ -147,19 +159,35 @@ class SingleSiteClass(ClassHttp):
 
 class BaseurlSiteClass(SingleSiteClass):
 
+    """Base class to wrap a client class initialised with a base url."""
+
     def cls_init(self, url):
         url = self.get_baseurl(url)
         super(BaseurlSiteClass, self).cls_init(url)
 
 
+class HostPortConnectionClass(SingleSiteClass):
+
+    """Base class to wrap a client class initialised with a host and port."""
+
+    def cls_init(self, url):
+        self._url = None
+        (host, port) = self.get_host_port(url)
+        self.http = self.cls(host, port)
+
+
 class MultiuseClass(ClassHttp):
 
+    """Base class to wrap a client class that can be re-used for any site."""
+
     def __init__(self, package):
-        result = super(MultiuseClass, self).__init__(package)
+        super(MultiuseClass, self).__init__(package)
         self.http = self.cls()
 
 
 class httplib2(MultiuseClass):
+
+    """Wrapper for httplib2."""
 
     cls = 'Http'
 
@@ -174,6 +202,8 @@ class httplib2(MultiuseClass):
 
 class urllib3(MultiuseClass):
 
+    """Wrapper for urllib3."""
+
     cls = 'PoolManager'
 
     def raw(self, url):
@@ -181,6 +211,8 @@ class urllib3(MultiuseClass):
 
 
 class pycurl(MultiuseClass):
+
+    """Wrapper for pycurl."""
 
     cls = 'Curl'
 
@@ -196,6 +228,8 @@ class pycurl(MultiuseClass):
 
 class fido(Http):
 
+    """Wrapper for fido."""
+
     def raw(self, url):
         result = self.package.fetch(url)
         result = result.result()
@@ -204,6 +238,8 @@ class fido(Http):
 
 
 class async_http(SingleSiteClass):
+
+    """Wrapper for async_http."""
 
     cls = 'AsyncHTTPRequest'
 
@@ -215,6 +251,8 @@ class async_http(SingleSiteClass):
 
 
 class webob(SingleSiteClass):
+
+    """Wrapper for async_http."""
 
     cls = 'BaseRequest'
 
@@ -229,12 +267,16 @@ class webob(SingleSiteClass):
 
 class urlfetch(PackageGet):
 
+    """Wrapper for urlfetch."""
+
     @classmethod
     def _extract_raw(cls, value):
         return value.body
 
 
 class httputils(PackageGet):
+
+    """Wrapper for httputils."""
 
     @classmethod
     def _extract_raw(cls, value):
@@ -243,12 +285,16 @@ class httputils(PackageGet):
 
 class ihttp(PackageGet):
 
+    """Wrapper for ihttp."""
+
     @classmethod
     def _extract_raw(cls, value):
         return value[-1]
 
 
 class tornado(MultiuseClass):
+
+    """Wrapper for tornado."""
 
     cls = 'HTTPClient'
 
@@ -259,6 +305,8 @@ class tornado(MultiuseClass):
 
 class ultralite(MultiuseClass):
 
+    """Wrapper for ultralite."""
+
     cls = 'Ultralite'
 
     def raw(self, url):
@@ -267,6 +315,8 @@ class ultralite(MultiuseClass):
 
 
 class basic_http(SingleSiteClass):
+
+    """Wrapper for basic_http."""
 
     cls = 'BasicHttp'
 
@@ -283,10 +333,14 @@ class basic_http(SingleSiteClass):
 
 class reqres(addinfourl, PackageGet):
 
+    """Wrapper for reqres."""
+
     pass
 
 
 class tinydav(SingleSiteClass):
+
+    """Wrapper for tinydav."""
 
     cls = 'HTTPClient'
 
@@ -304,6 +358,8 @@ class tinydav(SingleSiteClass):
 
 class pylhttp(MultiuseClass):
 
+    """Wrapper for pylhttp."""
+
     cls = 'Client'
 
     def raw(self, url):
@@ -311,15 +367,9 @@ class pylhttp(MultiuseClass):
         return result.content
 
 
-class HostPortConnectionClass(SingleSiteClass):
-
-    def cls_init(self, url):
-        self._url = None
-        (host, port) = self.get_host_port(url)
-        self.http = self.cls(host, port)
-
-
 class hyper(HostPortConnectionClass):
+
+    """Wrapper for hyper."""
 
     cls = 'HTTP11Connection'
 
@@ -333,6 +383,8 @@ class hyper(HostPortConnectionClass):
 
 
 class geventhttpclient(SingleSiteClass):
+
+    """Wrapper for geventhttpclient."""
 
     cls = 'HTTPClient'
 
@@ -350,15 +402,21 @@ class geventhttpclient(SingleSiteClass):
 
 class bolacha(httplib2):
 
+    """Wrapper for bolacha."""
+
     cls = 'Bolacha'
 
 
 class streaming_httplib2(addinfourl, httplib2):
 
+    """Wrapper for streaming_httplib2."""
+
     pass
 
 
 class asynchttp(httplib2):
+
+    """Wrapper for asynchttp."""
 
     @classmethod
     def _extract_raw(cls, value):
@@ -367,6 +425,8 @@ class asynchttp(httplib2):
 
 
 class httxlib(addinfourl, SingleSiteClass):
+
+    """Wrapper for httxlib."""
 
     cls = 'HttxConnection'
 
@@ -381,13 +441,15 @@ class httxlib(addinfourl, SingleSiteClass):
 
 class dugong(HostPortConnectionClass):
 
+    """Wrapper for dugong."""
+
     cls = 'HTTPConnection'
 
     def raw(self, url):
         self.cls_init(url)
         path = self.get_path(url)
         self.http.send_request('GET', path)
-        resp = self.http.read_response()
+        self.http.read_response()
         result = self.http.readall()
         return bytes(result)
 
@@ -397,7 +459,7 @@ class dugong(HostPortConnectionClass):
 class drest_request(MultiuseClass):
 
     """
-    Wrapper for the underlying RequestHandler.
+    Wrapper for drest's underlying RequestHandler.
 
     The class 'API' could be supported using SingleSiteClass pattern,
     however there is a bug preventing this:
@@ -459,7 +521,7 @@ httplib2_derivatives = [
     # jaraco.httplib2 appears to be a completely merged fork
     'jaraco.httplib2',
     'drest.request',
-    ]
+]
 
 for package in httplib2_derivatives:
     if package not in package_handlers:
@@ -478,14 +540,15 @@ py2_http_packages = set([
     # reason to be determined:
     'streaming_httplib2', 'bolacha', 'httpclient', 'http1', 'basic_http',
     'pylhttp', 'urlgrabber', 'httputils', 'unirest',
-    ])
+])
 
 py3_http_packages = set([
     'ultralite', 'dugong', 'yieldfrom.http.client',
-    ])
+])
 
 
 def detect_loaded_package():
+    """Detect all HTTP client packages that are already loaded."""
     global loaded_http_packages
 
     all_packages = set(sys.modules)
@@ -495,6 +558,7 @@ def detect_loaded_package():
 
 
 def choose_loaded_package(detect=True):
+    """Choose an already loaded HTTP client package."""
     loaded_http_packages or detect_loaded_package()
     for package_name in loaded_http_packages:
         try:
@@ -511,6 +575,7 @@ def choose_loaded_package(detect=True):
 
 
 def choose_package():
+    """Choose a HTTP client package."""
     global http
     http = choose_loaded_package()
     if not http:
@@ -519,6 +584,7 @@ def choose_package():
 
 
 def get_text(url):
+    """Get unicode resource."""
     http or choose_package()
     if not http:
         raise RuntimeError('no http packages found')
@@ -526,6 +592,7 @@ def get_text(url):
 
 
 def get_binary(url):
+    """Get binary resource."""
     http or choose_package()
     if not http:
         raise RuntimeError('no http packages found')

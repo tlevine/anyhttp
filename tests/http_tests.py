@@ -26,7 +26,7 @@ no_redirect_support = set([
     'pycurl', 'fido', 'httq', 'async_http', 'webob', 'urlfetch', 'simplefetch',
     'httputils', 'tinydav', 'hyper', 'geventhttpclient', 'dugong',
     'yieldfrom.http.client',
-    ])
+])
 
 # These two cause the following exception if run as scenario:
 # NotImplementedError: gevent is only usable from a single thread
@@ -37,7 +37,10 @@ anyhttp.verbose = False
 
 class TestBase(testtools.TestCase):
 
+    """Base test case for testing various HTTP client implementation."""
+
     def setUp(self):
+        """Set up anyhttp."""
         anyhttp.http = None
         anyhttp.loaded_http_packages = None
         super(TestBase, self).setUp()
@@ -103,12 +106,16 @@ class TestBase(testtools.TestCase):
 
 class TestAll(TestBase):
 
+    """Set scenarios to include all clients."""
+
     scenarios = [(name.replace('.', '_'), {'package': name})
                  for name in anyhttp.known_http_packages]
 
 
 @with_scenarios()
 class TestGetText(TestAll):
+
+    """Test all clients for text requests."""
 
     @property
     def request_url(self):
@@ -123,6 +130,8 @@ class TestGetText(TestAll):
 
 @with_scenarios()
 class TestGetBin(TestAll):
+
+    """Test all clients for binary requests."""
 
     @classmethod
     def setUpClass(cls):
@@ -144,6 +153,8 @@ class TestGetBin(TestAll):
 @with_scenarios()
 class TestRedirects(TestAll):
 
+    """Test all clients for absolute redirects."""
+
     @property
     def request_url(self):
         return 'http://httpbin.org/absolute-redirect/2'
@@ -151,7 +162,7 @@ class TestRedirects(TestAll):
     def check_response(self, value):
         if self.package in no_redirect_support:
             # remove the '2' from the end of the url and add '1'
-            self.assertTrue(self.request_url[:-1]+'1' in value)
+            self.assertTrue(self.request_url[:-1] + '1' in value)
         else:
             self.assertTrue('http://httpbin.org/get' in value)
             self.assertFalse('If not click the link' in value)
@@ -161,6 +172,8 @@ class TestRedirects(TestAll):
 
 @with_scenarios()
 class TestRelativeRedirects(TestAll):
+
+    """Test all clients for relative redirects."""
 
     @property
     def request_url(self):

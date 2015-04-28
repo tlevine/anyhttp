@@ -3,6 +3,7 @@
 *.pyo
 *.py~
 *.rst~
+*.yml~
 /.tox
 /*.egg
 *pycache*

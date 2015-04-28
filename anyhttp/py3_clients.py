@@ -4,6 +4,8 @@ import anyhttp
 
 class aiohttp(anyhttp.Http):
 
+    """Wrapper for aiohttp."""
+
     def raw_worker(self, url):
         response = yield from self.package.request('GET', url)
         return (yield from response.read())
@@ -15,6 +17,8 @@ class aiohttp(anyhttp.Http):
 
 
 class yieldfrom(anyhttp.HostPortConnectionClass):
+
+    """Wrapper for yieldfrom."""
 
     cls = 'HTTPConnection'
 
