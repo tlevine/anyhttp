@@ -8,6 +8,7 @@ python:
 install:
   - python -c "import setuptools; print(setuptools.__version__)"
   - pip install cryptography pyasn1 pyasn1-modules enum34
+  - pip install cython  # needed for bzr
   - pip install bzr
   - bzr branch lp:~jayvdb/testscenarios/0.4-with_scenarios testscenarios
   - cd testscenarios
