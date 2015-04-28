@@ -536,7 +536,7 @@ py2_http_packages = set([
     'urllib4.client', 'ourl',
     # bug in package code:
     'tinfoilhat', 'asynchttp', 'async_http', 'dogbutler', 'ihttp', 'fido',
-    'simplefetch', 'httxlib',
+    'simplefetch', 'httxlib', 'reqres',
     # reason to be determined:
     'streaming_httplib2', 'bolacha', 'httpclient', 'http1', 'basic_http',
     'pylhttp', 'urlgrabber', 'httputils', 'unirest',
