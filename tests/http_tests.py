@@ -141,15 +141,6 @@ class TestGetBin(TestAll):
     test = TestBase.do_get_bin
 
 
-class __TestGetDetectText(unittest.TestCase):
-
-    def select_package(self):
-        name = self.package  # load name from scenario
-        self._load_package()
-
-        anyhttp.http = anyhttp.Detect(sys.modules[name])
-
-
 @with_scenarios()
 class TestRedirects(TestAll):
 
