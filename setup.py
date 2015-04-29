@@ -75,7 +75,7 @@ if 'TEST_SKIP_PACKAGES' in os.environ:
     env_skip_packages = set(os.environ['TEST_SKIP_PACKAGES'].split(' '))
     http_packages -= env_skip_packages
 
-
+http_packages.add('vlermv')
 test_deps = list(http_packages)
 
 setup(
