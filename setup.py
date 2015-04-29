@@ -8,6 +8,11 @@
 import os
 import sys
 
+if 'test' in sys.argv and sys.version_info < (2, 7):
+    import unittest
+    import unittest2
+    sys.modules['unittest'] = unittest2
+
 from setuptools import setup
 
 import anyhttp
@@ -56,6 +61,13 @@ if sys.version_info[0] > 2:
     http_packages -= anyhttp.py2_http_packages
 else:
     http_packages -= anyhttp.py3_http_packages
+    if sys.version_info[1] == 6:
+        # logging.NullHandler is missing in py2.6
+        http_packages -= set(['httpstream'])
+        # syntax error; httq.py, line 46
+        http_packages -= set(['httq'])
+        # py27 syntax; http20/frame.py", line 567
+        http_packages -= set(['hyper'])
 
 http_packages -= set(not_installable_links.keys())
 

@@ -5,7 +5,10 @@ import sys
 
 import anyhttp
 
-import unittest
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 try:
     import testtools
@@ -187,3 +190,9 @@ class TestRelativeRedirects(TestAll):
             self.assertFalse('If not click the link' in value)
 
     test = TestBase.do_get_text
+
+if __name__ == '__main__':
+    try:
+        unittest.main()
+    except SystemExit:
+        pass
