@@ -8,6 +8,11 @@
 import os
 import sys
 
+if 'test' in sys.argv and sys.version_info < (2, 7):
+    import unittest
+    import unittest2
+    sys.modules['unittest'] = unittest2
+
 from setuptools import setup
 
 import anyhttp
@@ -73,10 +78,6 @@ if 'TEST_SKIP_PACKAGES' in os.environ:
 
 test_deps = list(http_packages)
 
-setup_deps = []
-if sys.version_info[0:2] == (2, 6):
-    setup_deps += ['unittest2']
-
 setup(
     name='anyhttp',
     version='0.1',
@@ -87,7 +88,6 @@ setup(
     license='MIT License',
     packages=['anyhttp'],
     dependency_links=dependency_links,
-    setup_requires=setup_deps,
     test_suite="tests",
     tests_require=test_deps,
     classifiers=[
