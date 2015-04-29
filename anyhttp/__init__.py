@@ -9,7 +9,7 @@ import sys
 import types
 
 from vlermv import cache
-from vlermv.serializers import identity
+import anyhttp.serializers as serializers
 
 from io import BytesIO
 from warnings import warn
@@ -585,11 +585,7 @@ def choose_package():
         # TODO: try loading packages
         raise RuntimeError('no http packages found')
 
-def _get(text_or_binary, url):
-    http or choose_package()
-    if not http:
-        raise RuntimeError('no http packages found')
-
+def _get(text_or_binary, url, http = None):
     if text_or_binary == 'text':
         return http.get_text(url)
     elif text_or_binary == 'binary':
@@ -597,28 +593,43 @@ def _get(text_or_binary, url):
     else:
         raise ValueError('text_or_binary must be "text" or "binary".')
 
-def _get_cached(cache_dir, text_or_binary, url):
-    return cache(cache_dir, serializer = identity)(text_or_binary, url)
+def _get_cached(cache_dir, text_or_binary, url, http = None):
+    serializer = getattr(serializers, text_or_binary)
+    return cache(cache_dir, serializer = serializer)(_get)(text_or_binary, url, http = http)
+
+def _get_wrapper(cache, text_or_binary, url, require_http = True):
+    if not require_http:
+        class http:
+            @staticmethod
+            def get_binary(url):
+                raise AssertionError('This should not be run.')
+
+            @staticmethod
+            def get_text(url):
+                raise AssertionError('This should not be run.')
+
+    else:
+        http or choose_package()
+        if not http:
+            raise RuntimeError('no http packages found')
+
+    if cache:
+        return _get_cached(cache, text_or_binary, url, http = http)
+    else:
+        return _get(text_or_binary, url, http = http)
 
 def get_text(url, cache = None):
     """
     Get unicode resource.
     If you set "cache" to directory, requests will be cached in that directory.
     """
-    if cache:
-        return _get_cached(cache, 'text', url)
-    else:
-        return _get('text', url)
-
+    return _get_wrapper(cache, 'text', url)
 
 def get_binary(url, cache = None):
     """
     Get binary resource.
     If you set "cache" to directory, requests will be cached in that directory.
     """
-    if cache:
-        return _get_cached(cache, 'text', url)
-    else:
-        return _get('text', url)
+    return _get_wrapper(cache, 'binary', url)
 
 get_bin = get_binary
