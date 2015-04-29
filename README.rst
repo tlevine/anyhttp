@@ -68,6 +68,11 @@ The sequence will look like:
 
 Testing
 =======
+Run tests like so. ::
+
+    python2 setup.py test
+    python3 setup.py test
+
 anyhttp includes tests that verify the supported clients can perform
 certain http operations, and that test suite allows basic HTTP conformance
 testing of HTTP features.
