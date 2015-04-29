@@ -54,6 +54,9 @@ http_packages = set(
 
 if sys.version_info[0] > 2:
     http_packages -= anyhttp.py2_http_packages
+    if sys.version_info[1] == 6:
+        # logging.NullHandler is missing in py2.6
+        http_packages -= ['httpstream']
 else:
     http_packages -= anyhttp.py3_http_packages
 
