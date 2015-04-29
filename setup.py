@@ -42,8 +42,6 @@ bugfix_dependency_links = [
     'git+https://github.com/jayvdb/basic_http#egg=basic_http',
     # fix pycurl dependency in setup.py (e879aa8)
     'git+git://yum.baseurl.org/urlgrabber.git#egg=urlgrabber',
-    # https://github.com/ifduyue/urlfetch/issues/40
-    'git+https://github.com/ifduyue/urlfetch#egg=urlfetch',
 ]
 
 dependency_links = []
