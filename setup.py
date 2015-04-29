@@ -59,6 +59,8 @@ else:
     if sys.version_info[1] == 6:
         # logging.NullHandler is missing in py2.6
         http_packages -= set(['httpstream'])
+        # syntax error; httq.py, line 46
+        http_packages -= set(['httq'])
 
 http_packages -= set(not_installable_links.keys())
 
