@@ -11,3 +11,5 @@
 build
 dist
 anyhttp.egg-info/
+.eggs
+.anyhttp-test-cache
