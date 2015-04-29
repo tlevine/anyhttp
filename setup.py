@@ -61,6 +61,8 @@ else:
         http_packages -= set(['httpstream'])
         # syntax error; httq.py, line 46
         http_packages -= set(['httq'])
+        # py27 syntax; http20/frame.py", line 567
+        http_packages -= set(['hyper'])
 
 http_packages -= set(not_installable_links.keys())
 
