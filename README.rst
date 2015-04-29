@@ -73,6 +73,16 @@ Run tests like so. ::
     python2 setup.py test
     python3 setup.py test
 
+Note that a bunch of clients will be downloaded when you first run
+the tests.
+
+To run only the cache tests, do this.
+
+    python2 -m unittest tests/cache_tests.py
+    python3 -m unittest tests/cache_tests.py
+
+Tests use multiple clients
+--------------------------------
 anyhttp includes tests that verify the supported clients can perform
 certain http operations, and that test suite allows basic HTTP conformance
 testing of HTTP features.
