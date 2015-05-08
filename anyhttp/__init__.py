@@ -588,8 +588,11 @@ import vlermv
 # The magic transformer produces prettier file names but can have
 # collisions. Base64 doesn't have collisions.
 # https://pythonhosted.org/vlermv/transformers.html
+# Base64 serializer in vlermv 1.2.1 doesn't support tuples.
+# Supporting tuples would be easy, but I want to send you something
+# that works now.
 @vlermv.cache(serializer = vlermv.serializers.identity_str,
-              key_transformer = vlermv.transformers.base64)
+              key_transformer = vlermv.transformers.magic)
 def get_text(url):
     """Get unicode resource."""
     http or choose_package()
@@ -598,7 +601,7 @@ def get_text(url):
     return http.get_text(url)
 
 @vlermv.cache(serializer = vlermv.serializers.identity_bytes,
-              key_transformer = vlermv.transformers.base64)
+              key_transformer = vlermv.transformers.magic)
 def get_binary(url):
     """Get binary resource."""
     http or choose_package()
