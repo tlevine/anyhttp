@@ -583,6 +583,13 @@ def choose_package():
         raise RuntimeError('no http packages found')
 
 
+import vlermv
+
+# The magic transformer produces prettier file names but can have
+# collisions. Base64 doesn't have collisions.
+# https://pythonhosted.org/vlermv/transformers.html
+@vlermv.cache(serializer = vlermv.serializers.identity_str,
+              key_transformer = vlermv.transformers.base64)
 def get_text(url):
     """Get unicode resource."""
     http or choose_package()
@@ -590,7 +597,8 @@ def get_text(url):
         raise RuntimeError('no http packages found')
     return http.get_text(url)
 
-
+@vlermv.cache(serializer = vlermv.serializers.identity_bytes,
+              key_transformer = vlermv.transformers.base64)
 def get_binary(url):
     """Get binary resource."""
     http or choose_package()
